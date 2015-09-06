@@ -50,7 +50,7 @@ const static int SINGLE_GEN_MOVE_SIZE = 20;
 const static int BOARD_NUMBER = 256;
 const static int PIECE_COUNT = 32;
 const static int INVALID_SCORE = INT_MAX;
-const static int INFINITY = SHRT_MAX;
+const static int INFINITY_SCORE = SHRT_MAX;
 const static int LOSS_SCORE = SHRT_MAX;
 
 
@@ -296,7 +296,7 @@ const static short HORSE_DELTA[4][2] = {{-33, -31}, {-18, 14}, {-14, 18}, {31, 3
 
 const static short HORSE_CHECK_DELTA[4][2] = {{-33, -18}, {-31, -14}, {14, 31}, {18, 33}};
 
-const static byte BOARD_STARTUP[] = {
+const static int BOARD_STARTUP[] = {
 	0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 	0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 	0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,

@@ -107,21 +107,21 @@ void CNegaScout_TT_HH::AddMoves(int count, int ply){
 }
 
 bool CNegaScout_TT_HH::SearchAGoodMove(int squares[]){
-	memcpy(m_cur_position, squares, BOARD_NUMBER);
+	memcpy(m_cur_position, squares, sizeof(m_cur_position));
 	m_max_depth = m_search_depth;
 	m_tt->CalculateInitHashKey(m_cur_position);
 	m_hh->ResetHistoryTable();
 
-	NegaScout(m_max_depth, -INFINITY, INFINITY);
+	NegaScout(m_max_depth, -INFINITY_SCORE, INFINITY_SCORE);
 	bool is_kill = false;
 	int sq_dst = CChessUtil::Dst(m_best_move.m_move);
 	if (m_cur_position[sq_dst] != 0)
 		is_kill = true;
 
-	int best_score = m_tt->LookupHashTable(-INFINITY, INFINITY, m_max_depth, 1);
+	int best_score = m_tt->LookupHashTable(-INFINITY_SCORE, INFINITY_SCORE, m_max_depth, 1);
 	MakeMove(m_best_move);
 	
-	memcpy(squares, m_cur_position, BOARD_NUMBER);
+	memcpy(squares, m_cur_position, sizeof(squares));
 	return is_kill;
 }
 

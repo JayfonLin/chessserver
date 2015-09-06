@@ -38,8 +38,8 @@ protected:
 public:
 	CSearchEngine();
 	virtual ~CSearchEngine();
-	inline void SetBestMove(CHESS_MOVE move);
-	inline CHESS_MOVE GetBestMove();
+	virtual inline void SetBestMove(CHESS_MOVE move);
+	virtual inline CHESS_MOVE GetBestMove();
 	virtual inline void SetSearchDepth(int depth);
 	virtual inline void SetEvaluator(CEvaluator* evaluator);
 	virtual inline void SetMoveGenerator(CMoveGenerator* generator);
