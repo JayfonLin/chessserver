@@ -17,14 +17,17 @@ int main()
 	CNegaScout_TT_HH* engine = new CNegaScout_TT_HH();
 	CTestBoard boards;
 
-	for (int i = 0; i < 2; ++i){
+	for (int i = 0; i < 4; ++i){
 		engine->SearchAGoodMove(boards.boards[i]);
 		CTestUtil::PrintBoard(boards.boards[i]);
 		CHESS_MOVE best_move = engine->GetBestMove();
 		CTestUtil::MakeMove(boards.boards[i], best_move);
+		system("pause");
+		system("cls");
 		CTestUtil::PrintBoard(boards.boards[i]);
+		system("pause");
+		system("cls");
 	}
 
-	system("pause");
 	return 0;
 }
