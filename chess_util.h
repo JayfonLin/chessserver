@@ -21,15 +21,15 @@ public:
 		return PIECE_IN_FORT[piece_position];
 	}
 
-	static bool RankY(int piece_position){
+	static int RankY(int piece_position){
 		return piece_position >> 4;
 	}
 
-	static bool FileX(int piece_position){
+	static int FileX(int piece_position){
 		return piece_position & 0xf;
 	}
 
-	static bool CoordXY(int x, int y){
+	static int CoordXY(int x, int y){
 		return x + (y << 4);
 	}
 
@@ -65,7 +65,7 @@ public:
 		return PIECE_LEGAL_SPAN[piece_dst - piece_src + 0x100] == 3;
 	}
 
-	static bool BishopPin(int piece_src, int piece_dst){
+	static int BishopPin(int piece_src, int piece_dst){
 		return (piece_src + piece_dst)  >> 1;
 	}
 

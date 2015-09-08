@@ -6,7 +6,7 @@ Created on 2015-09-06
 
 #include "negascout_tt_hh.h"
 #include "board.cpp"
-#include "test_util.cpp"
+#include "test_util.h"
 
 #include <iostream>
 #include <cstdlib>
@@ -17,11 +17,13 @@ int main()
 	CNegaScout_TT_HH* engine = new CNegaScout_TT_HH();
 	CTestBoard boards;
 
-	engine->SearchAGoodMove(boards.boards[0]);
-	printboard(boards.boards[0]);
-	CHESS_MOVE best_move = engine->GetBestMove();
-	makemove(boards.boards[0], best_move);
-	printboard(boards.boards[0]);
+	for (int i = 0; i < 2; ++i){
+		engine->SearchAGoodMove(boards.boards[i]);
+		CTestUtil::PrintBoard(boards.boards[i]);
+		CHESS_MOVE best_move = engine->GetBestMove();
+		CTestUtil::MakeMove(boards.boards[i], best_move);
+		CTestUtil::PrintBoard(boards.boards[i]);
+	}
 
 	system("pause");
 	return 0;

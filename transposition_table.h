@@ -22,7 +22,7 @@ struct HashItem{
 class CTranspositionTable
 {
 protected:
-	const static int HASH_SIZE = 1024 * (2 << 6);
+	const static int HASH_SIZE = 1024 * (2 << 10);
 
 public:
 	

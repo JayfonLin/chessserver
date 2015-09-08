@@ -300,7 +300,7 @@ CEvaluator::~CEvaluator(){
 	
 }
 
-int CEvaluator::Evaluate(int squares[], int is_red_turn, int depth){
+int CEvaluator::Evaluate(int squares[], bool is_red_turn, int depth){
 	memset(m_chess_value, 0, sizeof(m_chess_value));
 	memset(m_attack_pos, 0, sizeof(m_attack_pos));
 	memset(m_guard_pos, 0, sizeof(m_guard_pos));

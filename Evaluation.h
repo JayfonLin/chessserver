@@ -47,7 +47,7 @@ protected:
 public:
 	CEvaluator();
 	virtual ~CEvaluator();
-	virtual int Evaluate(int squares[], int is_red_turn, int depth);
+	virtual int Evaluate(int squares[], bool is_red_turn, int depth);
 
 	static int GetPosValue(int sq, int pc);
 };

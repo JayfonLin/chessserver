@@ -30,7 +30,7 @@ CTranspositionTable::~CTranspositionTable(){
 }
 
 void CTranspositionTable::InitializeHashKey(){
-	int i,j,k;
+	int i,j;
 	
 	srand((unsigned)time(NULL));
 	
@@ -109,7 +109,7 @@ int CTranspositionTable::LookupHashTable(int alpha, int beta, int depth, int tab
 	int x;
 	HashItem *pht;
 
-	x = m_hash_32 & 0xFFFF;
+	x = m_hash_32 & 0xFFFFF;
 	pht = &m_ptt[table_no][x];
 
 	/*if (pht == null){
@@ -139,7 +139,7 @@ void CTranspositionTable::EnterHashTable(ENTRY_TYPE entry_type, short eval, shor
 	int x;
 	HashItem *pht;
 
-	x = m_hash_32 & 0xFFFF;
+	x = m_hash_32 & 0xFFFFF;
 	pht = &m_ptt[table_no][x];
 
 	pht->checksum = m_hash_64;

@@ -35,6 +35,8 @@ protected:
 	virtual void UnmakeMove(CHESS_MOVE move, int chess_id);
 	virtual int IsGameOver(int squares[], int depth);
 
+	const static int DEFAULT_SEARCH_DEPTH = 4;
+
 public:
 	CSearchEngine();
 	virtual ~CSearchEngine();

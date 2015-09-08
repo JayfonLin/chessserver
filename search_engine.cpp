@@ -41,7 +41,7 @@ void CSearchEngine::SetMoveGenerator(CMoveGenerator* generator){
 }
 
 CSearchEngine::CSearchEngine(){
-	m_search_depth = 3;
+	m_search_depth = DEFAULT_SEARCH_DEPTH;
 	m_evaluator = new CEvaluator();
 	m_move_generator = new CMoveGenerator();
 

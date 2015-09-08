@@ -26,11 +26,6 @@ int CNegaScout_TT_HH::NegaScout(int depth, int alpha, int beta){
 			ChessMove move = new ChessMove();
 			move.Move = m_tt.LookupBestMove(side);
 			m_best_move = move;
-			
-			System.out.printf("LookupBestMove from<%d, %d>, to<%d, %d>]\n",
-             (RankY(Src(move.Move))-FILE_LEFT+1), (FileX(Src(move.Move))-RANK_TOP+1),
-			(RankY(Dst(move.Move))-FILE_LEFT+1), (FileX(Dst(move.Move))-RANK_TOP+1));
-			
 		}*/
 		return score;
 	}
