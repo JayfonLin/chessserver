@@ -6,13 +6,44 @@
 #include <event2/event.h>
 #include <event2/bufferevent.h>
 
+#include <stdint.h>
+
 #define LISTEN_PORT 9999
 #define LISTEN_BACKLOG 32
+
+#define MAX_LINE    256
+
+typedef int8_t BYTE
+typedef int16_t WORD
+typedef int32_t DWORD
 
 void do_accept(evutil_socket_t listener, short event, void *arg);
 void read_cb(struct bufferevent *bev, void *arg);
 void error_cb(struct bufferevent *bev, short event, void *arg);
 void write_cb(struct bufferevent *bev, void *arg);
+
+class CBinUnpacker
+{
+private:
+    struct bufferevent *bev;
+    char line[MAX_LINE+1];
+    int offset;
+public:
+    CBinUnpacker(struct bufferevent *bev){
+        this->bev = bev;
+        
+        int n;
+        offset = 0;
+        evutil_socket_t fd = bufferevent_getfd(bev);
+        n = bufferevent_read(bev, line, MAX_LINE);
+    }
+
+    BYTE read_byte(){
+        BYTE b = (BYTE)line[offset];
+        return b;
+    }
+
+};
 
 int main(int argc, char *argv[])
 {
@@ -77,7 +108,12 @@ void do_accept(evutil_socket_t listener, short event, void *arg)
 
 void read_cb(struct bufferevent *bev, void *arg)
 {
-#define MAX_LINE    256
+    evutil_socket_t fd = bufferevent_getfd(bev);
+    printf("fd=%d", fd);
+    pack = CBinUnpacker(bev);
+    BYTE b = pack.read_byte();
+    printf("read byte: %d", b);
+/*
     char line[MAX_LINE+1];
     int n;
     evutil_socket_t fd = bufferevent_getfd(bev);
@@ -88,7 +124,10 @@ void read_cb(struct bufferevent *bev, void *arg)
 
         bufferevent_write(bev, line, n);
     }
+*/
+
 }
+
 
 void write_cb(struct bufferevent *bev, void *arg) {}
 
