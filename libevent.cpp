@@ -1,3 +1,4 @@
+#include <cstring>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -7,26 +8,44 @@
 #include <event2/bufferevent.h>
 
 #include <stdint.h>
+#include <netinet/in.h>
+#include <cstddef>
 
 #define LISTEN_PORT 9999
 #define LISTEN_BACKLOG 32
 
-#define MAX_LINE    256
+//1024 is too small!
+#define MAX_LINE    1024 
 
-typedef int8_t BYTE
-typedef int16_t WORD
-typedef int32_t DWORD
+#define MEMORY_BLOCK_SIZE 512
+
+typedef int8_t BYTE;
+typedef int16_t WORD;
+typedef int32_t DWORD;
+typedef signed char* STRING;
 
 void do_accept(evutil_socket_t listener, short event, void *arg);
 void read_cb(struct bufferevent *bev, void *arg);
 void error_cb(struct bufferevent *bev, short event, void *arg);
 void write_cb(struct bufferevent *bev, void *arg);
 
+struct MemoryBlock
+{
+    char* buf[MEMORY_BLOCK_SIZE];
+    size_t off;
+    MemoryBlock* next;
+
+    MemoryBlock(){
+        off = 0;
+        next = NULL:
+    }
+};
+
 class CBinUnpacker
 {
 private:
     struct bufferevent *bev;
-    char line[MAX_LINE+1];
+    unsigned char line[MAX_LINE];
     int offset;
 public:
     CBinUnpacker(struct bufferevent *bev){
@@ -39,9 +58,90 @@ public:
     }
 
     BYTE read_byte(){
-        BYTE b = (BYTE)line[offset];
+        BYTE b = *(BYTE*)&line[offset];
+        offset += sizeof(BYTE);
         return b;
     }
+
+    WORD read_word(){
+        WORD w = ntohs(*(WORD*)&line[offset]);
+        offset += sizeof(WORD);
+        return w;
+    }
+
+
+    DWORD read_dword(){
+        DWORD dword = ntohl(*(DWORD*)&line[offset]);
+        offset += sizeof(DWORD);
+        return dword;
+    }
+
+    STRING read_string(){
+
+        WORD len = read_word();
+        BYTE *data = new BYTE[len+1];
+        memcpy(data, line+offset, len*sizeof(BYTE));
+        data[len] = '\0';
+        offset += len*sizeof(BYTE);
+        
+        return (STRING)data; 
+    }
+
+};
+
+class CBinPacker{
+private:
+    struct bufferevent *bev;
+    //unsigned char line[MAX_LINE];
+
+    MemoryBlock *head;
+    MemoryBlock *tail;
+
+public:
+    CBinPacker(struct bufferevent *bev){
+        this->bev = bev;
+
+        MemoryBlock *block = new MemoryBlock();
+        head = tail = block;
+        offset = 0;
+    }
+
+    void write_buf(char* buffer, size_t len){
+        size_t offset = 0;
+
+        while (offset < len){
+
+            if (tail->off == MEMORY_BLOCK_SIZE){
+                MemoryBlock* block = new MemoryBlock();
+                tail->next = block;
+                tail = block;
+            }
+
+            int remain_space = (len - offset < MEMORY_BLOCK_SIZE) ? len - offset : MEMORY_BLOCK_SIZE - tail->off;
+            memcpy(tail->buf+tail->off, buffer+offset, remain_space);
+            tail->off += remain_space;
+            offset += remain_space;
+        }
+    }
+
+    void pack_byte(BYTE b){
+        write_buf(*(char*)&b, sizeof(BYTE));
+    }
+
+    void pack_dword(DWORD d){
+        d = htonl(d);
+        write_buf(*(char*)&d, sizeof(DWORD));
+    }
+
+    char* get_pack_buffer(){
+        
+    }
+
+    /*
+    void pack_string(const STRING& str){
+        size_t len = sizeof(str);
+    }
+    */
 
 };
 
@@ -108,23 +208,21 @@ void do_accept(evutil_socket_t listener, short event, void *arg)
 
 void read_cb(struct bufferevent *bev, void *arg)
 {
-    evutil_socket_t fd = bufferevent_getfd(bev);
-    printf("fd=%d", fd);
-    pack = CBinUnpacker(bev);
-    BYTE b = pack.read_byte();
-    printf("read byte: %d", b);
-/*
-    char line[MAX_LINE+1];
-    int n;
-    evutil_socket_t fd = bufferevent_getfd(bev);
+    CBinUnpacker pack = CBinUnpacker(bev);
 
-    while (n = bufferevent_read(bev, line, MAX_LINE), n > 0) {
-        line[n] = '\0';
-        printf("fd=%u, read line: %s\n", fd, line);
+    DWORD d = pack.read_dword();
+    printf("read dword: %x\n", d);
 
-        bufferevent_write(bev, line, n);
-    }
-*/
+
+    
+    STRING str = pack.read_string();
+    printf("read string: %s\n", str);
+
+    str = pack.read_string();
+    printf("read string: %s\n", str);
+
+    //d = pack.read_dword();
+    //printf("read dword: %x\n", d);
 
 }
 
