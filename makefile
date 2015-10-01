@@ -28,14 +28,14 @@ transposition_table.o : constant.h chess_move.h define.h chess_util.h transposit
 history_heuristic.o : chess_move.h history_heuristic.h history_heuristic.cpp
 	$(cc) -c history_heuristic.cpp
 
-constant.o : define.h constant.h
-	$(cc) -c constant.h
+constant.o : define.h constant.cpp
+	$(cc) -c constant.cpp
 
-chess_move.o : define.h chess_move.h
-	$(cc) -c chess_move.h
+chess_move.o : define.h chess_move.cpp
+	$(cc) -c chess_move.cpp
 
-chess_util.o : constant.h define.h chess_util.h
-	$(cc) -c chess_util.h
+chess_util.o : constant.h define.h chess_util.cpp
+	$(cc) -c chess_util.cpp
 
 move_generator.o : constant.h chess_util.h move_generator.h move_generator.cpp
 	$(cc) -c move_generator.cpp
@@ -43,8 +43,9 @@ move_generator.o : constant.h chess_util.h move_generator.h move_generator.cpp
 evaluation.o : constant.h chess_util.h move_generator.h evaluation.h evaluation.cpp
 	$(cc) -c evaluation.cpp
 
-define.o : define.h
-	$(cc) -c define.h
+define.o : define.cpp
+	$(cc) -c define.cpp
+
 .PHONY : clean
 clean :
 	-rm chess $(objects) *.h.gch
