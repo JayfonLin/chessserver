@@ -20,13 +20,18 @@ protected:
 	int NegaScout(int depth, int alpha, int beta);
 	void AddMoves(int count, int ply);
 
+
+
 public:
-	bool SearchAGoodMove(int squares[]);
+	CHESS_MOVE SearchAGoodMove(int squares[]);
 	CNegaScout_TT_HH();
 	virtual ~CNegaScout_TT_HH();
 
 	friend class CHistoryHeuristic;
+
+	
 };
 
+CNegaScout_TT_HH* GetEngineInstance();
 
 #endif

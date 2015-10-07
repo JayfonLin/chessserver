@@ -26,6 +26,8 @@ typedef int16_t WORD;
 typedef int32_t DWORD;
 typedef char* STRING;
 
+const int DWORD_SIZE = 4;
+
 void do_accept(evutil_socket_t listener, short event, void *arg);
 void read_cb(struct bufferevent *bev, void *arg);
 void error_cb(struct bufferevent *bev, short event, void *arg);
@@ -47,8 +49,13 @@ class CBinUnpacker
 {
 private:
     struct bufferevent *bev;
-    unsigned char line[MAX_LINE];
+    unsigned char* line;
     int offset;
+
+    DWORD read_dword(char *data){
+        DWORD dword = ntohl(*(DWORD*)&data);
+        return dword;
+    }
 public:
     CBinUnpacker(struct bufferevent *bev){
         this->bev = bev;
@@ -56,7 +63,13 @@ public:
         int n;
         offset = 0;
         evutil_socket_t fd = bufferevent_getfd(bev);
-        n = bufferevent_read(bev, line, MAX_LINE);
+        char pack_len_data[DWORD_SIZE];
+
+        n = bufferevent_read(bev, pack_len_data, DWORD_SIZE);
+        DWORD pack_len = read_dword(pack_len_data);
+
+        line = new unsigned char[pack_len];
+        n = bufferevent_read(bev, line, pack_len);
     }
 
     BYTE read_byte(){
@@ -93,14 +106,12 @@ public:
 
 class CBinPacker{
 private:
-    struct bufferevent *bev;
+    //struct bufferevent *bev;
     //unsigned char line[MAX_LINE];
     struct evbuffer *buf;
 
 public:
-    CBinPacker(struct bufferevent *bev){
-        this->bev = bev;
-
+    CBinPacker(){
         buf = evbuffer_new();
     }
 
@@ -128,25 +139,23 @@ public:
     void pack_string(STRING data){
         WORD len = (WORD)strlen(data);
         pack_word(len);
-        printf("pack_word: %d", len);
+        printf("pack_word: %d\n", len);
         write_buf(data, len*sizeof(char));
     }
 
-    char* get_pack_buffer(){
-
+    evbuffer* get_pack_buffer(){
+        DWORD pack_len = evbuffer_get_length(buf);
+        pack_len = htonl(pack_len);
+        evbuffer_prepend(buf, (char*)&pack_len, sizeof(DWORD));
+        return buf;
     }
 
     bool send(){
-        evutil_socket_t fd = bufferevent_getfd(bev);
-        int result = evbuffer_write(buf, fd);
-        if (result <= 0){
-            printf("send failed!");
-        }
+        
     }
 
     virtual ~CBinPacker(){
         evbuffer_free(buf);
-        bufferevent_free(bev);
     }
 
 };
@@ -216,6 +225,10 @@ void read_cb(struct bufferevent *bev, void *arg)
 {
     CBinUnpacker pack(bev);
 
+    BYTE b = pack.read_byte();
+    printf("read byte: %d\n", b);
+    WORD w = pack.read_word();
+    printf("read word: %d\n", w);
     DWORD d = pack.read_dword();
     printf("read dword: %x\n", d);
 
@@ -234,7 +247,7 @@ void read_cb(struct bufferevent *bev, void *arg)
 
 
 void write_cb(struct bufferevent *bev, void *arg) {
-    CBinPacker pack(bev);
+    CBinPacker pack;
     pack.pack_byte(103);
     pack.pack_dword(0x01020304);
     //char str[] = "hello apple nooodles abcdefghijklmnopqrstuvwxyz\0";
@@ -246,7 +259,13 @@ void write_cb(struct bufferevent *bev, void *arg) {
     */
 
     pack.pack_string(str);
-    pack.send();
+    evbuffer* buf = pack.get_pack_buffer();
+
+    evutil_socket_t fd = bufferevent_getfd(bev);
+    int result = evbuffer_write(buf, fd);
+    if (result <= 0){
+        printf("send failed!");
+    }
 }
 
 void error_cb(struct bufferevent *bev, short event, void *arg)

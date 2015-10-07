@@ -8,7 +8,7 @@ Created on 2015-09-05
 
 #include "constant.h"
 #include "chess_move.h"
-#include "define.h"
+#include "../define.h"
 
 enum ENTRY_TYPE {EXACT, LOWER_BOUND, UPPER_BOUND};
 struct HashItem{

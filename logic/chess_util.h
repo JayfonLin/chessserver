@@ -8,7 +8,7 @@ Created on 2015-09-03
 */
 
 #include "constant.h"
-#include "define.h"
+#include "../define.h"
 
 class CChessUtil
 {
@@ -86,7 +86,7 @@ public:
 	}
 
 	static bool SameSide(int type_a, int type_b){
-		return IsRed(type_a) && IsRed(type_b) || IsBlack(type_a) && IsBlack(type_b);
+		return (IsRed(type_a) && IsRed(type_b)) || (IsBlack(type_a) && IsBlack(type_b));
 	}
 	static bool SameRank(int piece_src, int piece_dst){
 		return ((piece_src ^ piece_dst) & 0xf0) == 0;

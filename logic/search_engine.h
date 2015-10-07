@@ -29,7 +29,7 @@ protected:
 	CHESS_MOVE m_move_list[10][80];
 
 	void InitMoveList();
-	virtual bool SearchAGoodMove(int squares[]) = 0;
+	virtual CHESS_MOVE SearchAGoodMove(int squares[]) = 0;
 	virtual int MakeMove(CHESS_MOVE move);
 
 	virtual void UnmakeMove(CHESS_MOVE move, int chess_id);
@@ -40,11 +40,11 @@ protected:
 public:
 	CSearchEngine();
 	virtual ~CSearchEngine();
-	virtual inline void SetBestMove(CHESS_MOVE move);
-	virtual inline CHESS_MOVE GetBestMove();
-	virtual inline void SetSearchDepth(int depth);
-	virtual inline void SetEvaluator(CEvaluator* evaluator);
-	virtual inline void SetMoveGenerator(CMoveGenerator* generator);
+	void SetBestMove(CHESS_MOVE move);
+	CHESS_MOVE GetBestMove();
+	void SetSearchDepth(int depth);
+	void SetEvaluator(CEvaluator* evaluator);
+	void SetMoveGenerator(CMoveGenerator* generator);
 
 };
 

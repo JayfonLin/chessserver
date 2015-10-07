@@ -6,7 +6,7 @@ Created on 2015-09-03
 @author:jeff
 */
 
-#include "define.h"
+#include "../define.h"
 
 struct CHESS_MOVE
 {

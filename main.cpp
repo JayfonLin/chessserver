@@ -4,17 +4,22 @@ Created on 2015-09-06
 @author:jeff
 */
 
-#include "negascout_tt_hh.h"
-#include "board.cpp"
-#include "test_util.h"
+#include "logic/negascout_tt_hh.h"
+//#include "board.cpp"
+//#include "test_util.h"
+#include "network/tcpserver.h"
 
 #include <iostream>
 #include <cstdlib>
 using namespace std;
 
+
 int main()
 {
-	CNegaScout_TT_HH* engine = new CNegaScout_TT_HH();
+	GetEngineInstance();
+	TCPServerInit();
+
+	/*
 	CTestBoard boards;
 
 	for (int i = 0; i < 4; ++i){
@@ -28,6 +33,9 @@ int main()
 		system("pause");
 		system("cls");
 	}
+	*/
+
+	sleep(1000);
 
 	return 0;
 }

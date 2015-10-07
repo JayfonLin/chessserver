@@ -101,7 +101,7 @@ void CNegaScout_TT_HH::AddMoves(int count, int ply){
 	}
 }
 
-bool CNegaScout_TT_HH::SearchAGoodMove(int squares[]){
+CHESS_MOVE CNegaScout_TT_HH::SearchAGoodMove(int squares[]){
 	memcpy(m_cur_position, squares, sizeof(m_cur_position));
 	m_max_depth = m_search_depth;
 	m_tt->CalculateInitHashKey(m_cur_position);
@@ -116,8 +116,8 @@ bool CNegaScout_TT_HH::SearchAGoodMove(int squares[]){
 	int best_score = m_tt->LookupHashTable(-INFINITY_SCORE, INFINITY_SCORE, m_max_depth, 1);
 	MakeMove(m_best_move);
 	
-	memcpy(squares, m_cur_position, sizeof(squares));
-	return is_kill;
+	memcpy(squares, m_cur_position, sizeof(m_cur_position));
+	return m_best_move;
 }
 
 CNegaScout_TT_HH::CNegaScout_TT_HH(){
@@ -129,3 +129,12 @@ CNegaScout_TT_HH::~CNegaScout_TT_HH(){
 	delete m_tt;
 	delete m_hh;
 }
+
+
+
+static CNegaScout_TT_HH* engine = new CNegaScout_TT_HH();
+CNegaScout_TT_HH* GetEngineInstance(){
+	return engine;
+}
+
+
