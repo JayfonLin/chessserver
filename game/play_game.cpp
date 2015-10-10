@@ -10,7 +10,8 @@ Created on 2015-10-05
 
 void OnStartChessGame(int uid, struct bufferevent *bev, CBinUnpacker *unpacker){
 	printf("OnStartChessGame\n");
-	GetBoardInstance();
+	CBoard *board = GetBoardInstance();
+	board->LoadStartupBoard();
 	CNegaScout_TT_HH* engine = GetEngineInstance();
 
 	int depth = unpacker->UnpackByte();
@@ -33,11 +34,21 @@ void SearchGoodMove(int uid, struct bufferevent *bev, CBoard* board){
 	CNegaScout_TT_HH* engine = GetEngineInstance();
 	int* cur_board = board->GetCurBoard();
 	CHESS_MOVE chess_move = engine->SearchAGoodMove(cur_board);
+
+	BYTE is_kill = 0;
+
+	
+	int sq_dst = CChessUtil::Dst(chess_move.m_move);
+	int *cur_board = board->GetCurBoard();
+	if (cur_board[sq_dst] != 0)
+		is_kill = 1;
+
 	board->MakeMove(chess_move);
 
 	CBinPacker packet;
 	packet.PackDWord(CMD_CHESS_MOVE);
 	packet.PackDWord(chess_move.m_move);
+	packet.PackByte(is_kill);
 
 	evbuffer* buf = packet.GetPackBuffer();
     evutil_socket_t fd = bufferevent_getfd(bev);

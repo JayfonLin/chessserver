@@ -30,7 +30,6 @@ void OnTestConnection(int uid, struct bufferevent *bev, CBinUnpacker *unpacker){
 
 void OnPackage(struct bufferevent *bev, CBinUnpacker *unpacker){
 	
-	
 	int cmd = unpacker->UnpackDWord();
 	printf("OnPackage cmd: %x\n", cmd);
 

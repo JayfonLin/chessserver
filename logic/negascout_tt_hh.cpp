@@ -116,7 +116,7 @@ CHESS_MOVE CNegaScout_TT_HH::SearchAGoodMove(int squares[]){
 	int best_score = m_tt->LookupHashTable(-INFINITY_SCORE, INFINITY_SCORE, m_max_depth, 1);
 	MakeMove(m_best_move);
 	
-	memcpy(squares, m_cur_position, sizeof(m_cur_position));
+	//memcpy(squares, m_cur_position, sizeof(m_cur_position));
 	return m_best_move;
 }
 
