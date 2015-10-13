@@ -108,3 +108,4 @@ int CSearchEngine::IsGameOver(int squares[], int depth){
 			return LOSS_SCORE + depth;
 	return 0;
 }
+

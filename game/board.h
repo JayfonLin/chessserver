@@ -10,11 +10,13 @@ Created on 2015-10-05
 
 #include "../logic/constant.h"
 #include "../logic/chess_move.h"
+#include "move_history.h"
 
 class CBoard
 {
 private: 
 	int m_cur_board[BOARD_NUMBER];
+	CMoveHistory* move_history;
 
 public:
 	CBoard();
@@ -22,8 +24,9 @@ public:
 	void LoadBoard(const int* board);
 	void LoadStartupBoard();
 	int MakeMove(struct CHESS_MOVE move);
-	void UnmakeMove();
+	CHESS_MOVE UnmakeMove();
 	int* GetCurBoard();
+	void Initialize();
 
 };
 

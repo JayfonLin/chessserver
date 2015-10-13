@@ -127,5 +127,8 @@ public:
 	static bool IsBlack(int type){
 		return type != 0 && (type >> 4) == 1;
 	}
+
+
+	static int IsGameOver(int squares[]);
 };
 #endif

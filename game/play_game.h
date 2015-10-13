@@ -20,8 +20,11 @@ Created on 2015-10-05
 #include "../client/proto.h"
 
 
+
 void OnStartChessGame(int uid, struct bufferevent *bev, CBinUnpacker *unpacker);
 void OnChessMove(int uid, struct  bufferevent *bev, CBinUnpacker *unpacker);
 void SearchGoodMove(int uid, struct bufferevent *bev, CBoard* board);
+void OnUnmakeMove(int uid, struct bufferevent *bev, CBinUnpacker *pack);
+void SendUnmakeMove(struct bufferevent *bev, CHESS_MOVE move);
 
 #endif

@@ -13,7 +13,8 @@ typedef std::map<int, handler_func_ptr> handler_map;
 static handler_map HANDLERS = {
 	{CMD_TEST_CONNECTION, OnTestConnection},
 	{CMD_CHESS_START_UP, OnStartChessGame},
-	{CMD_CHESS_MOVE, OnChessMove}
+	{CMD_CHESS_MOVE, OnChessMove},
+	{CMD_UNMAKE_MOVE, OnUnmakeMove},
 };
 
 void OnTestConnection(int uid, struct bufferevent *bev, CBinUnpacker *unpacker){

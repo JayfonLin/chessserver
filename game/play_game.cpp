@@ -11,14 +11,16 @@ Created on 2015-10-05
 void OnStartChessGame(int uid, struct bufferevent *bev, CBinUnpacker *unpacker){
 	printf("OnStartChessGame\n");
 	CBoard *board = GetBoardInstance();
-	board->LoadStartupBoard();
+	board->Initialize();
 	CNegaScout_TT_HH* engine = GetEngineInstance();
 
 	int depth = unpacker->UnpackByte();
 	engine->SetSearchDepth(depth);
+
+
 }
 
-void OnChessMove(int uid, struct  bufferevent *bev, CBinUnpacker *unpacker){
+void OnChessMove(int uid, struct bufferevent *bev, CBinUnpacker *unpacker){
 	printf("OnChessMove\n");
 	CBoard *board = GetBoardInstance();
 	int m_move = unpacker->UnpackDWord();
@@ -37,11 +39,12 @@ void SearchGoodMove(int uid, struct bufferevent *bev, CBoard* board){
 
 	BYTE is_kill = 0;
 
-	
 	int sq_dst = CChessUtil::Dst(chess_move.m_move);
-	int *cur_board = board->GetCurBoard();
 	if (cur_board[sq_dst] != 0)
 		is_kill = 1;
+
+	if (CChessUtil::IsGameOver(cur_board))
+		is_kill = 2;
 
 	board->MakeMove(chess_move);
 
@@ -57,4 +60,30 @@ void SearchGoodMove(int uid, struct bufferevent *bev, CBoard* board){
         printf("send failed!");
     }
 
+}
+
+void OnUnmakeMove(int uid, struct bufferevent *bev, CBinUnpacker *pack){
+	printf("OnUnmakeMove\n");
+	CBoard *board = GetBoardInstance();
+	CHESS_MOVE move1 = board->UnmakeMove();
+	SendUnmakeMove(bev, move1);
+	CHESS_MOVE move2 = board->UnmakeMove();
+	SendUnmakeMove(bev, move2);
+};
+
+void SendUnmakeMove(struct bufferevent *bev, CHESS_MOVE move){
+
+	printf("SendUnmakeMove\n");
+
+	CBinPacker packet;
+	packet.PackDWord(CMD_UNMAKE_MOVE);
+	packet.PackDWord(move.m_move);
+	packet.PackByte(move.m_chess_id);
+
+	evbuffer* buf = packet.GetPackBuffer();
+    evutil_socket_t fd = bufferevent_getfd(bev);
+    int result = evbuffer_write(buf, fd);
+    if (result <= 0){
+        printf("send failed!");
+    }
 }
