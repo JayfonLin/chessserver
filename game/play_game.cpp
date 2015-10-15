@@ -65,9 +65,19 @@ void SearchGoodMove(int uid, struct bufferevent *bev, CBoard* board){
 void OnUnmakeMove(int uid, struct bufferevent *bev, CBinUnpacker *pack){
 	printf("OnUnmakeMove\n");
 	CBoard *board = GetBoardInstance();
-	CHESS_MOVE move1 = board->UnmakeMove();
+
+    if (!board->CanUnmakeMove())
+        return;
+
+    CHESS_MOVE move1 = board->GetLastMove();
+    board->UnmakeMove();
 	SendUnmakeMove(bev, move1);
-	CHESS_MOVE move2 = board->UnmakeMove();
+
+	if (!board->CanUnmakeMove())
+        return;
+
+    CHESS_MOVE move2 = board->GetLastMove();
+    board->UnmakeMove();
 	SendUnmakeMove(bev, move2);
 };
 

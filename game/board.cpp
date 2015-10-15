@@ -47,15 +47,26 @@ int CBoard::MakeMove(struct CHESS_MOVE move){
 	return chess_id;
 }
 
-CHESS_MOVE CBoard::UnmakeMove(){
-	CHESS_MOVE move = move_history->PopMove();
+void CBoard::UnmakeMove(){
+	CHESS_MOVE move = move_history->TopMove();
 
 	int sq_src = CChessUtil::Src(move.m_move);
 	int sq_dst = CChessUtil::Dst(move.m_move);
 	m_cur_board[sq_src] = m_cur_board[sq_dst];
 	m_cur_board[sq_dst] = move.m_chess_id;
 
-	return move;
+    move_history->PopMove();
+}
+
+bool CBoard::CanUnmakeMove(){
+    if (move_history->IsEmpty())
+        return false;
+
+    return true;
+}
+
+CHESS_MOVE CBoard::GetLastMove(){
+    return move_history->TopMove();
 }
 
 int* CBoard::GetCurBoard(){

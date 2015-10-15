@@ -14,7 +14,7 @@ Created on 2015-10-05
 
 class CBoard
 {
-private: 
+private:
 	int m_cur_board[BOARD_NUMBER];
 	CMoveHistory* move_history;
 
@@ -24,7 +24,9 @@ public:
 	void LoadBoard(const int* board);
 	void LoadStartupBoard();
 	int MakeMove(struct CHESS_MOVE move);
-	CHESS_MOVE UnmakeMove();
+	void UnmakeMove();
+	bool CanUnmakeMove();
+	CHESS_MOVE GetLastMove();
 	int* GetCurBoard();
 	void Initialize();
 
