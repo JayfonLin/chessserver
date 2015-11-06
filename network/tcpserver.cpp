@@ -11,6 +11,9 @@ Created on 2015-10-02
 #define LISTEN_PORT 9999
 #define LISTEN_BACKLOG 32
 
+#include "../util/log.h"
+#include "../util/commons.h"
+
 
 int TCPServerInit(){
 	evutil_socket_t listener;
@@ -33,7 +36,7 @@ int TCPServerInit(){
         return 1;
     }
 
-    printf ("Listening...\n");
+    printf("Listening...");
 
     evutil_make_socket_nonblocking(listener);
 
@@ -46,8 +49,9 @@ int TCPServerInit(){
     pid_t pid;
     pid = fork();
     if (pid == 0){
+        CLog::GetInstance()->start();
     	event_base_dispatch(base);
-    	printf("The End.");
+    	Log("The End.");
     	return 0;
 	}else{
     	return 0;
@@ -71,7 +75,7 @@ void do_accept(evutil_socket_t listener, short event, void *arg)
         return;
     }
 
-    printf("ACCEPT: fd = %u\n", fd);
+    Log("ACCEPT: fd = %u", fd);
 
     struct bufferevent *bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
     bufferevent_setcb(bev, read_cb, write_cb, error_cb, arg);
@@ -80,7 +84,7 @@ void do_accept(evutil_socket_t listener, short event, void *arg)
 
 void read_cb(struct bufferevent *bev, void *arg)
 {
-    printf("read_cb\n");
+    Log("read_cb\n");
     CBinUnpacker *pack = new CBinUnpacker(bev);
     OnPackage(bev, pack);
 }
@@ -100,7 +104,7 @@ void write_cb(struct bufferevent *bev, void *arg) {
     evutil_socket_t fd = bufferevent_getfd(bev);
     int result = evbuffer_write(buf, fd);
     if (result <= 0){
-        printf("send failed!");
+        Log("send failed!");
     }
     */
 }
@@ -108,15 +112,15 @@ void write_cb(struct bufferevent *bev, void *arg) {
 void error_cb(struct bufferevent *bev, short event, void *arg)
 {
     evutil_socket_t fd = bufferevent_getfd(bev);
-    printf("fd = %u, ", fd);
+    Log("fd = %u, ", fd);
     if (event & BEV_EVENT_TIMEOUT) {
-        printf("Timed out\n"); //if bufferevent_set_timeouts() called
+        Log("Timed out"); //if bufferevent_set_timeouts() called
     }
     else if (event & BEV_EVENT_EOF) {
-        printf("connection closed\n");
+        Log("connection closed");
     }
     else if (event & BEV_EVENT_ERROR) {
-        printf("some other error\n");
+        Log("some other error");
     }
     bufferevent_free(bev);
 }

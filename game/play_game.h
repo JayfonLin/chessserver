@@ -18,6 +18,7 @@ Created on 2015-10-05
 #include "../logic/negascout_tt_hh.h"
 #include "../logic/chess_move.h"
 #include "../client/proto.h"
+#include "../util/commons.h"
 
 
 

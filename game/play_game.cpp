@@ -9,7 +9,7 @@ Created on 2015-10-05
 #include <cstdio>
 
 void OnStartChessGame(int uid, struct bufferevent *bev, CBinUnpacker *unpacker){
-	printf("OnStartChessGame\n");
+	Log("OnStartChessGame");
 	CBoard *board = GetBoardInstance();
 	board->Initialize();
 	CNegaScout_TT_HH* engine = GetEngineInstance();
@@ -21,7 +21,7 @@ void OnStartChessGame(int uid, struct bufferevent *bev, CBinUnpacker *unpacker){
 }
 
 void OnChessMove(int uid, struct bufferevent *bev, CBinUnpacker *unpacker){
-	printf("OnChessMove\n");
+	Log("OnChessMove");
 	CBoard *board = GetBoardInstance();
 	int m_move = unpacker->UnpackDWord();
 	CHESS_MOVE move;
@@ -57,13 +57,13 @@ void SearchGoodMove(int uid, struct bufferevent *bev, CBoard* board){
     evutil_socket_t fd = bufferevent_getfd(bev);
     int result = evbuffer_write(buf, fd);
     if (result <= 0){
-        printf("send failed!");
+        Log("send failed!");
     }
 
 }
 
 void OnUnmakeMove(int uid, struct bufferevent *bev, CBinUnpacker *pack){
-	printf("OnUnmakeMove\n");
+	Log("OnUnmakeMove");
 	CBoard *board = GetBoardInstance();
 
     if (!board->CanUnmakeMove())
@@ -83,7 +83,7 @@ void OnUnmakeMove(int uid, struct bufferevent *bev, CBinUnpacker *pack){
 
 void SendUnmakeMove(struct bufferevent *bev, CHESS_MOVE move){
 
-	printf("SendUnmakeMove\n");
+	Log("SendUnmakeMove");
 
 	CBinPacker packet;
 	packet.PackDWord(CMD_UNMAKE_MOVE);
@@ -94,6 +94,6 @@ void SendUnmakeMove(struct bufferevent *bev, CHESS_MOVE move){
     evutil_socket_t fd = bufferevent_getfd(bev);
     int result = evbuffer_write(buf, fd);
     if (result <= 0){
-        printf("send failed!");
+        Log("send failed!");
     }
 }

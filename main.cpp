@@ -5,12 +5,12 @@ Created on 2015-09-06
 */
 
 #include "logic/negascout_tt_hh.h"
-//#include "board.cpp"
-//#include "test_util.h"
 #include "network/tcpserver.h"
 
 #include <iostream>
 #include <cstdlib>
+#include <util/log.h>
+#include "util/commons.h"
 using namespace std;
 
 
@@ -18,22 +18,6 @@ int main()
 {
 	GetEngineInstance();
 	TCPServerInit();
-
-	/*
-	CTestBoard boards;
-
-	for (int i = 0; i < 4; ++i){
-		engine->SearchAGoodMove(boards.boards[i]);
-		CTestUtil::PrintBoard(boards.boards[i]);
-		CHESS_MOVE best_move = engine->GetBestMove();
-		CTestUtil::MakeMove(boards.boards[i], best_move);
-		system("pause");
-		system("cls");
-		CTestUtil::PrintBoard(boards.boards[i]);
-		system("pause");
-		system("cls");
-	}
-	*/
 
 	sleep(1000);
 

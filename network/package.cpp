@@ -9,10 +9,11 @@ Created on 2015-10-02
 #include <netinet/in.h>
 #include <cstring>
 #include <cstdio>
+#include "../util/commons.h"
 
 DWORD CBinUnpacker::ReadDWord(char *data){
 	DWORD dword = ntohl(*(DWORD*)data);
-    printf("CBinUnpacker::ReadDWord dword: %d\n", dword);
+    Log("CBinUnpacker::ReadDWord dword: %d", dword);
 	return dword;
 }
 
@@ -70,7 +71,7 @@ CBinPacker::CBinPacker(){
 void CBinPacker::WriteBuf(char* data, size_t len){
 	int result = evbuffer_add(buf, data, len);
     if (result != 0){
-        printf("write buffer failed!");
+        Log("write buffer failed!");
     }
 }
 
@@ -91,7 +92,7 @@ void CBinPacker::PackDWord(DWORD d){
 void CBinPacker::PackString(STRING str){
 	WORD len = (WORD)strlen(str);
     PackWord(len);
-    printf("pack_word: %d\n", len);
+    Log("pack_word: %d", len);
     WriteBuf(str, len*sizeof(char));
 }
 

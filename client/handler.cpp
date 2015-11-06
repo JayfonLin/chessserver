@@ -6,6 +6,7 @@ Created on 2015-10-03
 */
 
 #include "handler.h"
+#include "../util/commons.h"
 
 typedef void (*handler_func_ptr)(int, struct bufferevent*, CBinUnpacker*);
 typedef std::map<int, handler_func_ptr> handler_map;
@@ -23,16 +24,16 @@ void OnTestConnection(int uid, struct bufferevent *bev, CBinUnpacker *unpacker){
 	DWORD d = unpacker->UnpackDWord();
 	STRING str = unpacker->UnpackString();
 
-	printf("recv byte: %d\n", b);
-	printf("recv word: %x\n", w);
-	printf("recv dword: %x\n", d);
-	printf("recv string: %s\n", str);
+	Log("recv byte: %d", b);
+	Log("recv word: %x", w);
+	Log("recv dword: %x", d);
+	Log("recv string: %s", str);
 }
 
 void OnPackage(struct bufferevent *bev, CBinUnpacker *unpacker){
 	
 	int cmd = unpacker->UnpackDWord();
-	printf("OnPackage cmd: %x\n", cmd);
+	Log("OnPackage cmd: %x", cmd);
 
 	(*HANDLERS.at(cmd))(0, bev, unpacker);
 }

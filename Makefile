@@ -44,7 +44,7 @@ CFLAGS     += $(addprefix -I ,$(sort $(dir $(sources_h))))
 CXXFLAGS    = $(CFLAGS) --std=c++11 
 LDFLAGS    := -L/usr/lib
 LOADLIBES  += #-L/usr/include/mysql
-LDLIBS     += -levent #-lpthread -lmysqlclient
+LDLIBS     += -levent -lpthread #-lmysqlclient
 
 # add vpath
 vpath %.h $(sort $(dir $(sources_h)))
